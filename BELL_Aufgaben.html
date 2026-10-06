@@ -50,12 +50,24 @@ button.link:hover { color: var(--navy); text-decoration: underline; }
 .group h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy); margin: 0 0 0.5rem; display: flex; gap: 0.5rem; align-items: baseline; }
 .group h2 span { color: var(--faint); font-weight: 500; letter-spacing: 0; text-transform: none; }
 
-.task { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.65rem 0.8rem; margin-bottom: 0.45rem; display: grid; grid-template-columns: 26px 1fr; gap: 0.2rem 0.6rem; }
+.task { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.65rem 0.8rem 0.65rem 0.4rem; margin-bottom: 0.45rem; display: grid; grid-template-columns: 22px 26px 1fr; gap: 0.2rem 0.5rem; }
+.task .chk { grid-column: 2; grid-row: 1; }
+.task .title { grid-column: 3; }
+.grip { grid-column: 1; grid-row: 1 / span 2; align-self: start; border: none; background: none; padding: 0.1rem 0; margin-top: 1px; color: var(--faint); cursor: grab; font-size: 15px; line-height: 1; letter-spacing: -2px; touch-action: none; user-select: none; border-radius: 4px; }
+.grip:hover, .grip:focus-visible { color: var(--navy); background: var(--navy-light); outline: none; }
+.grip[hidden] { display: block; visibility: hidden; }
+.task.dragging { box-shadow: 0 10px 28px rgba(20, 40, 70, 0.22); cursor: grabbing; pointer-events: none; opacity: 0.96; }
+.ph { border: 2px dashed #9fb6d3; border-radius: var(--radius); background: var(--navy-light); margin-bottom: 0.45rem; }
+.prio { display: inline-block; min-width: 1.5em; margin-right: 0.35rem; padding: 0 0.3em; border-radius: 5px; background: var(--navy-light); color: var(--navy); font-size: 12px; font-weight: 700; text-align: center; }
+.group.leer .tasks { min-height: 10px; }
+body.zieht .group.leer .tasks { min-height: 44px; border: 1px dashed #c5d3e3; border-radius: var(--radius); }
+.hint { font-size: 12px; color: var(--faint); margin: -0.4rem 0 0.9rem; }
+.print-only { display: none; }
 .task.done { background: #fbfcfb; }
 .task.done .title { color: var(--faint); text-decoration: line-through; }
 .task input[type=checkbox] { width: 19px; height: 19px; margin: 2px 0 0; accent-color: var(--green); cursor: pointer; }
 .title { font-weight: 600; word-break: break-word; }
-.meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 13px; }
+.meta { grid-column: 3; display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 13px; }
 .meta select, .meta input { font-size: 13px; padding: 0.22rem 0.4rem; }
 .badge { font-size: 11px; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 99px; }
 .b-offen { background: #eef1f4; color: var(--muted); }
@@ -63,9 +75,9 @@ button.link:hover { color: var(--navy); text-decoration: underline; }
 .b-erledigt { background: var(--green-light); color: var(--green); }
 .due-late { color: var(--red); font-weight: 700; }
 .due-soon { color: var(--orange); font-weight: 700; }
-.note { grid-column: 2; font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
+.note { grid-column: 3; font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
 .note a, .title a { color: var(--navy); }
-.changed { grid-column: 2; font-size: 11px; color: var(--faint); }
+.changed { grid-column: 3; font-size: 11px; color: var(--faint); }
 .edit { grid-column: 1 / -1; display: none; gap: 0.5rem; margin-top: 0.4rem; border-top: 1px dashed var(--border); padding-top: 0.6rem; }
 .task.open .edit { display: grid; }
 .edit .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
@@ -86,6 +98,28 @@ button.link:hover { color: var(--navy); text-decoration: underline; }
 .toast { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: #1f2a37; color: #fff; padding: 0.55rem 1rem; border-radius: 99px; font-size: 13px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .toast.show { opacity: 1; }
 
+@media print {
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  body { background: #fff; font-size: 10pt; }
+  .wrap { max-width: none; padding: 0; }
+  .me, .filters, .hint, .toast, .overlay, .grip, .edit, .new, .changed, .status-line, button, select, .chk input, .meta a, .bar { display: none !important; }
+  .print-only { display: inline !important; }
+  div.print-only { display: block !important; }
+  header { margin-bottom: 0.3rem; }
+  h1 { font-size: 15pt; }
+  .progress { border: none; padding: 0; margin: 0 0 0.6rem; }
+  .group { margin-bottom: 0.7rem; }
+  .group.leer { display: none; }
+  .group h2 { font-size: 10pt; margin-bottom: 0.15rem; break-after: avoid; }
+  .task { border: none; border-bottom: 0.5pt solid #bbb; border-radius: 0; padding: 0.25rem 0; margin: 0; grid-template-columns: 18px 1fr; gap: 0 0.3rem; break-inside: avoid; background: none !important; }
+  .task .chk { grid-column: 1; }
+  .task .title, .meta, .note { grid-column: 2; }
+  .pbox { font-size: 11pt; }
+  .meta { font-size: 9pt; }
+  .note { font-size: 9pt; }
+  .plink { font-size: 8pt; color: #555; word-break: break-all; }
+  .prio { background: none; padding: 0; min-width: 0; color: #000; }
+}
 @media (max-width: 640px) {
   .new .row, .edit .row { grid-template-columns: 1fr; }
   h1 { font-size: 1.3rem; }
@@ -98,11 +132,13 @@ button.link:hover { color: var(--navy); text-decoration: underline; }
     <div>
       <div class="kicker">BELL 2026 · Hannover, 16. und 17. November</div>
       <h1>Aufgaben im Team</h1>
+      <div class="print-only" id="printInfo"></div>
       <div class="status-line" id="statusLine">Wird geladen …</div>
     </div>
     <div class="me">
       Ich bin
       <select id="meSelect"></select>
+      <button id="printBtn" title="Aktuelle Auswahl drucken">Drucken</button>
       <button class="primary" id="newBtn">+ Neue Aufgabe</button>
     </div>
   </header>
@@ -130,6 +166,7 @@ button.link:hover { color: var(--navy); text-decoration: underline; }
   </form>
 
   <div class="filters" id="filters"></div>
+  <div class="hint" id="hint">Mit dem Griff ⋮⋮ links an jeder Karte lässt sich die Reihenfolge ändern. Oben steht, was zuerst dran ist. Eine Karte kann auch in einen anderen Bereich gezogen werden.</div>
   <div id="list"></div>
 </div>
 
@@ -242,6 +279,7 @@ $('newBtn').addEventListener('click', () => {
   $('nZust').value = me();
   $('nTitel').focus();
 });
+$('printBtn').addEventListener('click', () => { offen.clear(); render(); setTimeout(() => window.print(), 50); });
 $('newCancel').addEventListener('click', () => $('newForm').classList.remove('show'));
 $('newForm').addEventListener('submit', e => {
   e.preventDefault();
@@ -280,6 +318,123 @@ function passt(a) {
   return true;
 }
 
+// ---------- Reihenfolge ----------
+function rangVon(a) { const r = Number(a.rang); return a.rang !== '' && a.rang != null && !isNaN(r) ? r : Infinity; }
+function ordne(items) {
+  return items.slice().sort((x, y) => {
+    const dx = x.status === 'erledigt' ? 1 : 0, dy = y.status === 'erledigt' ? 1 : 0;
+    if (dx !== dy) return dx - dy;
+    const rx = rangVon(x), ry = rangVon(y);
+    if (rx < ry) return -1; if (rx > ry) return 1;
+    const fx = x.faellig || '9999', fy = y.faellig || '9999';
+    if (fx !== fy) return fx < fy ? -1 : 1;
+    return x.titel.localeCompare(y.titel, 'de');
+  });
+}
+function prioritaet(a) {
+  if (a.status === 'erledigt' || a.status === 'archiviert') return '';
+  const reihe = ordne(state.aufgaben.filter(x => x.bereich === a.bereich && x.status !== 'erledigt' && x.status !== 'archiviert'));
+  return reihe.findIndex(x => x.id === a.id) + 1;
+}
+function dragAktiv() { return filter.status === 'aktiv'; }
+function filterText() {
+  const p = filter.person === 'alle' ? 'alle Personen' : (filter.person === 'ich' ? (me() || 'meine') : filter.person);
+  const st = { aktiv: 'noch zu tun', erledigt: 'erledigt', archiviert: 'Archiv' }[filter.status] || '';
+  const b = filter.bereich === 'alle' ? 'alle Bereiche' : filter.bereich;
+  return [p, st, b].join(', ');
+}
+
+// Verschiebt Aufgabe id in Bereich ziel, vor nextId (oder nach prevId), und speichert die neue Reihenfolge
+async function verschiebe(id, ziel, nextId, prevId) {
+  const a = state.aufgaben.find(x => x.id === id);
+  if (!a) return;
+  if (!me()) { toast('Bitte zuerst oben Deinen Namen wählen'); render(); return; }
+  const voll = ordne(state.aufgaben.filter(x => x.bereich === ziel && x.id !== id && x.status !== 'archiviert'));
+  let pos = voll.length;
+  const iNext = nextId ? voll.findIndex(x => x.id === nextId) : -1;
+  const iPrev = prevId ? voll.findIndex(x => x.id === prevId) : -1;
+  if (iNext > -1) pos = iNext; else if (iPrev > -1) pos = iPrev + 1;
+  voll.splice(pos, 0, a);
+  const wechsel = a.bereich !== ziel;
+  a.bereich = ziel;
+  voll.forEach((x, i) => { x.rang = String((i + 1) * 10); });
+  render();
+  busy = true;
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ code: code(), aktion: 'reihenfolge', person: me(), bereich: ziel, verschoben: id, ids: voll.map(x => x.id) }) });
+    const d = await res.json();
+    if (!d.ok) throw new Error(d.fehler || 'Fehler');
+    if (d.aufgaben) state.aufgaben = d.aufgaben;
+    toast(wechsel ? 'Nach „' + ziel + '“ verschoben' : 'Reihenfolge gespeichert');
+  } catch (e) {
+    toast('Reihenfolge nicht gespeichert. Bitte erneut versuchen.');
+    await laden(true);
+  } finally { busy = false; render(); }
+}
+
+// Ziehen mit Maus, Finger oder Stift
+let drag = null;
+function starteZiehen(e, el) {
+  if (e.button !== undefined && e.button !== 0) return;
+  e.preventDefault();
+  const r = el.getBoundingClientRect();
+  const ph = document.createElement('div');
+  ph.className = 'ph'; ph.style.height = r.height + 'px';
+  el.after(ph);
+  Object.assign(el.style, { position: 'fixed', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', zIndex: 50 });
+  el.classList.add('dragging');
+  drag = { el, ph, dy: e.clientY - r.top, id: el.dataset.id };
+  document.body.classList.add('zieht');
+  busy = true;
+  window.addEventListener('pointermove', zieheWeiter);
+  window.addEventListener('pointerup', beendeZiehen, { once: true });
+  window.addEventListener('pointercancel', beendeZiehen, { once: true });
+}
+function zieheWeiter(e) {
+  if (!drag) return;
+  drag.el.style.top = (e.clientY - drag.dy) + 'px';
+  if (e.clientY < 60) window.scrollBy(0, -14); else if (e.clientY > window.innerHeight - 60) window.scrollBy(0, 14);
+  const unter = document.elementFromPoint(e.clientX, e.clientY);
+  if (!unter) return;
+  const karteEl = unter.closest('.task');
+  if (karteEl && karteEl !== drag.el) {
+    const k = karteEl.getBoundingClientRect();
+    if (e.clientY < k.top + k.height / 2) karteEl.before(drag.ph); else karteEl.after(drag.ph);
+    return;
+  }
+  const gruppe = unter.closest('.group');
+  if (gruppe && !unter.closest('.task')) {
+    const box = gruppe.querySelector('.tasks');
+    if (unter.closest('h2')) box.prepend(drag.ph); else if (!box.contains(drag.ph)) box.append(drag.ph);
+  }
+}
+function beendeZiehen() {
+  window.removeEventListener('pointermove', zieheWeiter);
+  if (!drag) return;
+  const { el, ph, id } = drag;
+  drag = null;
+  document.body.classList.remove('zieht');
+  const gruppe = ph.closest('.group');
+  let next = ph.nextElementSibling, prev = ph.previousElementSibling;
+  while (next && !next.classList.contains('task')) next = next.nextElementSibling;
+  while (prev && (!prev.classList.contains('task') || prev === el)) prev = prev.previousElementSibling;
+  el.removeAttribute('style'); el.classList.remove('dragging');
+  ph.replaceWith(el);
+  busy = false;
+  if (!gruppe) { render(); return; }
+  const a = state.aufgaben.find(x => x.id === id);
+  const ziel = gruppe.dataset.bereich;
+  const nextId = next ? next.dataset.id : '', prevId = prev ? prev.dataset.id : '';
+  if (ziel === a.bereich) {
+    // Nichts speichern, wenn die Karte an derselben Stelle abgelegt wurde
+    const reihe = ordne(state.aufgaben.filter(x => x.bereich === ziel && x.status !== 'archiviert')).map(x => x.id);
+    const i = reihe.indexOf(id);
+    const gleich = (nextId ? reihe[i + 1] === nextId : true) && (prevId ? reihe[i - 1] === prevId : true);
+    if (gleich) { render(); return; }
+  }
+  verschiebe(id, ziel, nextId, prevId);
+}
+
 // ---------- Liste ----------
 function render() {
   fuellePersonen();
@@ -295,18 +450,18 @@ function render() {
 
   const liste = state.aufgaben.filter(passt);
   const bereiche = (state.bereiche || []).concat([...new Set(liste.map(a => a.bereich))].filter(b => !(state.bereiche || []).includes(b)));
-  const reihenfolge = a => [a.status === 'erledigt' ? 1 : 0, a.faellig || '9999', a.titel.toLowerCase()];
-  const cmp = (x, y) => { const a = reihenfolge(x), b = reihenfolge(y); for (let i = 0; i < a.length; i++) { if (a[i] < b[i]) return -1; if (a[i] > b[i]) return 1; } return 0; };
 
   let html = '';
   bereiche.forEach(b => {
-    const items = liste.filter(a => a.bereich === b).sort(cmp);
-    if (!items.length) return;
+    const items = ordne(liste.filter(a => a.bereich === b));
+    if (!items.length && !(dragAktiv() && filter.bereich === 'alle')) return;
     const fertig = state.aufgaben.filter(a => a.bereich === b && a.status === 'erledigt').length;
     const gesamt = state.aufgaben.filter(a => a.bereich === b && a.status !== 'archiviert').length;
-    html += `<section class="group"><h2>${esc(b)} <span>${fertig} von ${gesamt} erledigt</span></h2>${items.map(karte).join('')}</section>`;
+    html += `<section class="group ${items.length ? '' : 'leer'}" data-bereich="${esc(b)}"><h2>${esc(b)} <span>${fertig} von ${gesamt} erledigt</span></h2><div class="tasks">${items.map(karte).join('')}</div></section>`;
   });
   $('list').innerHTML = html || '<div class="empty">Keine Aufgaben für diese Auswahl.</div>';
+  $('hint').style.display = dragAktiv() ? '' : 'none';
+  $('printInfo').textContent = 'Stand ' + new Date().toLocaleDateString('de-DE') + ' · Auswahl ' + filterText();
   binde();
 }
 
@@ -323,16 +478,20 @@ function karte(a) {
   const optP = sel => (ps.includes(sel) ? '' : '<option value="" selected>Bitte wählen</option>') + ps.map(p => `<option ${p === sel ? 'selected' : ''}>${esc(p)}</option>`).join('');
   const optS = sel => (state.status || []).map(s => `<option ${s === sel ? 'selected' : ''}>${esc(s)}</option>`).join('');
   const optB = sel => (state.bereiche || []).map(s => `<option ${s === sel ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  const prio = prioritaet(a);
   return `<article class="task ${done ? 'done' : ''} ${offen.has(a.id) ? 'open' : ''}" data-id="${esc(a.id)}">
-    <input type="checkbox" data-act="toggle" ${done ? 'checked' : ''} aria-label="Erledigt">
-    <div class="title">${esc(a.titel)}</div>
+    <button class="grip" data-act="grip" ${dragAktiv() && !done ? '' : 'hidden'} aria-label="Verschieben, mit Pfeiltasten nach oben oder unten" title="Ziehen zum Verschieben">⋮⋮</button>
+    <div class="chk"><input type="checkbox" data-act="toggle" ${done ? 'checked' : ''} aria-label="Erledigt"><span class="print-only pbox">${done ? '☑' : '☐'}</span></div>
+    <div class="title">${prio ? `<span class="prio" title="Priorität im Bereich">${prio}</span>` : ''}${esc(a.titel)}</div>
     <div class="meta">
       <select data-act="zust" aria-label="Zuständig">${optP(a.zustaendig)}</select>
+      <span class="print-only"><b>${esc(a.zustaendig || '')}</b>${a.status === 'in Arbeit' ? ' · in Arbeit' : ''}</span>
       ${badge} ${due}
       ${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">Link öffnen</a>` : ''}
       <button class="link" data-act="edit">${offen.has(a.id) ? 'Schließen' : 'Bearbeiten'}</button>
     </div>
     ${a.notiz ? `<div class="note">${linkify(a.notiz)}</div>` : ''}
+    ${a.link ? `<div class="print-only plink note">${esc(a.link)}</div>` : ''}
     ${a.geaendertVon ? `<div class="changed">zuletzt geändert von ${esc(a.geaendertVon)}, ${esc(a.geaendertAm)}</div>` : ''}
     <div class="edit">
       <label>Aufgabe<input type="text" data-f="titel" value="${esc(a.titel)}"></label>
@@ -366,6 +525,19 @@ function binde() {
       if (brauchtName() || !e.target.value) { render(); return; }
       Object.assign(a(), { zustaendig: e.target.value }); speichern({ id, zustaendig: e.target.value }, 'Zuständigkeit geändert');
     });
+    const grip = el.querySelector('[data-act=grip]');
+    grip.addEventListener('pointerdown', e => { if (!grip.hidden) starteZiehen(e, el); });
+    grip.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      const geschw = [...el.parentElement.querySelectorAll('.task')].filter(t => !t.classList.contains('done'));
+      const i = geschw.indexOf(el);
+      const ziel = e.key === 'ArrowUp' ? geschw[i - 1] : geschw[i + 1];
+      if (!ziel) return;
+      const bereich = el.closest('.group').dataset.bereich;
+      if (e.key === 'ArrowUp') verschiebe(id, bereich, ziel.dataset.id, ''); else verschiebe(id, bereich, '', ziel.dataset.id);
+      setTimeout(() => { const g = document.querySelector(`.task[data-id="${id}"] [data-act=grip]`); if (g) g.focus(); }, 30);
+    });
     el.querySelector('[data-act=edit]').addEventListener('click', () => { offen.has(id) ? offen.delete(id) : offen.add(id); render(); });
     el.querySelector('[data-act=save]').addEventListener('click', () => {
       if (brauchtName()) return;
@@ -384,7 +556,7 @@ function binde() {
 
 render();
 laden();
-setInterval(() => { if (!busy && !document.querySelector('.task.open') && !$('newForm').classList.contains('show')) laden(true); }, POLL_MS);
+setInterval(() => { if (!busy && !drag && !document.querySelector('.task.open') && !$('newForm').classList.contains('show')) laden(true); }, POLL_MS);
 </script>
 </body>
 </html>
