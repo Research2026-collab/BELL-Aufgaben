@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>BELL 2026 · Aufgaben</title>
+<style>
+:root {
+  --bg: #f7f8fa; --surface: #ffffff; --border: #e2e8f0;
+  --navy: #1a4f8a; --navy-light: #e8f0f9;
+  --text: #1a1a18; --muted: #6b6b67; --faint: #9a9a96;
+  --green: #2E7D5A; --green-light: #ebf5f0;
+  --orange: #c05621; --orange-light: #faf1e6;
+  --warn: #9a5b00; --warn-light: #fdf3dc;
+  --red: #a33a3a; --red-light: #fbeeee;
+  --radius: 10px; --radius-sm: 7px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.45; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+header { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: flex-end; justify-content: space-between; margin-bottom: 1rem; }
+.kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); }
+h1 { margin: 0.15rem 0 0; font-size: 1.6rem; }
+.status-line { font-size: 12px; color: var(--muted); }
+.status-line.err { color: var(--red); font-weight: 600; }
+.me { display: flex; align-items: center; gap: 0.5rem; font-size: 13px; color: var(--muted); }
+select, input, textarea, button { font: inherit; }
+select, input[type=text], input[type=date], input[type=url], input[type=password], textarea {
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); padding: 0.4rem 0.55rem; color: var(--text); }
+textarea { width: 100%; min-height: 60px; resize: vertical; }
+button { cursor: pointer; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); padding: 0.45rem 0.9rem; font-weight: 600; color: var(--text); }
+button.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+button.link { border: none; background: none; color: var(--muted); padding: 0.2rem 0.35rem; font-weight: 500; font-size: 13px; }
+button.link:hover { color: var(--navy); text-decoration: underline; }
+
+.progress { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.8rem 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center; margin-bottom: 0.9rem; }
+.bar { flex: 1 1 220px; height: 8px; background: #edf1f5; border-radius: 99px; overflow: hidden; }
+.bar > div { height: 100%; background: var(--green); width: 0; transition: width 0.3s; }
+.stat { font-size: 13px; color: var(--muted); }
+.stat b { color: var(--text); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1rem; }
+.chip { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 0.35rem 0.85rem; }
+.chip.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.filters .sep { width: 1px; height: 22px; background: var(--border); margin: 0 0.25rem; }
+.filters label { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; }
+
+.group { margin-bottom: 1.4rem; }
+.group h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy); margin: 0 0 0.5rem; display: flex; gap: 0.5rem; align-items: baseline; }
+.group h2 span { color: var(--faint); font-weight: 500; letter-spacing: 0; text-transform: none; }
+
+.task { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.65rem 0.8rem; margin-bottom: 0.45rem; display: grid; grid-template-columns: 26px 1fr; gap: 0.2rem 0.6rem; }
+.task.done { background: #fbfcfb; }
+.task.done .title { color: var(--faint); text-decoration: line-through; }
+.task input[type=checkbox] { width: 19px; height: 19px; margin: 2px 0 0; accent-color: var(--green); cursor: pointer; }
+.title { font-weight: 600; word-break: break-word; }
+.meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 13px; }
+.meta select, .meta input { font-size: 13px; padding: 0.22rem 0.4rem; }
+.badge { font-size: 11px; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 99px; }
+.b-offen { background: #eef1f4; color: var(--muted); }
+.b-arbeit { background: var(--warn-light); color: var(--warn); }
+.b-erledigt { background: var(--green-light); color: var(--green); }
+.due-late { color: var(--red); font-weight: 700; }
+.due-soon { color: var(--orange); font-weight: 700; }
+.note { grid-column: 2; font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
+.note a, .title a { color: var(--navy); }
+.changed { grid-column: 2; font-size: 11px; color: var(--faint); }
+.edit { grid-column: 1 / -1; display: none; gap: 0.5rem; margin-top: 0.4rem; border-top: 1px dashed var(--border); padding-top: 0.6rem; }
+.task.open .edit { display: grid; }
+.edit .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.edit label { font-size: 12px; color: var(--muted); display: grid; gap: 0.2rem; }
+.edit .actions { display: flex; gap: 0.5rem; justify-content: space-between; flex-wrap: wrap; }
+
+.new { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1rem; margin-bottom: 1.2rem; display: none; }
+.new.show { display: grid; gap: 0.6rem; }
+.new .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.new label { font-size: 12px; color: var(--muted); display: grid; gap: 0.2rem; }
+
+.empty { color: var(--muted); font-size: 14px; padding: 1rem 0; }
+.overlay { position: fixed; inset: 0; background: rgba(20, 30, 45, 0.45); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 10; }
+.overlay.show { display: flex; }
+.dialog { background: var(--surface); border-radius: var(--radius); padding: 1.3rem; max-width: 380px; width: 100%; display: grid; gap: 0.75rem; }
+.dialog h3 { margin: 0; }
+.dialog p { margin: 0; font-size: 14px; color: var(--muted); }
+.toast { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: #1f2a37; color: #fff; padding: 0.55rem 1rem; border-radius: 99px; font-size: 13px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+
+@media (max-width: 640px) {
+  .new .row, .edit .row { grid-template-columns: 1fr; }
+  h1 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="kicker">BELL 2026 · Hannover, 16. und 17. November</div>
+      <h1>Aufgaben im Team</h1>
+      <div class="status-line" id="statusLine">Wird geladen …</div>
+    </div>
+    <div class="me">
+      Ich bin
+      <select id="meSelect"></select>
+      <button class="primary" id="newBtn">+ Neue Aufgabe</button>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="stat"><b id="statDone">0</b> von <b id="statAll">0</b> erledigt</div>
+    <div class="bar"><div id="barFill"></div></div>
+    <div class="stat" id="statMine"></div>
+    <div class="stat" id="statDays"></div>
+  </div>
+
+  <form class="new" id="newForm" autocomplete="off">
+    <label>Aufgabe<input type="text" id="nTitel" required placeholder="Was ist zu tun?"></label>
+    <div class="row">
+      <label>Bereich<select id="nBereich"></select></label>
+      <label>Zuständig<select id="nZust" required></select></label>
+      <label>Fällig am<input type="date" id="nFaellig"></label>
+      <label>Link<input type="url" id="nLink" placeholder="https://…"></label>
+    </div>
+    <label>Notiz<textarea id="nNotiz" placeholder="Optional"></textarea></label>
+    <div style="display:flex; gap:0.5rem;">
+      <button type="submit" class="primary">Speichern</button>
+      <button type="button" id="newCancel">Abbrechen</button>
+    </div>
+  </form>
+
+  <div class="filters" id="filters"></div>
+  <div id="list"></div>
+</div>
+
+<div class="overlay" id="codeOverlay">
+  <form class="dialog" id="codeForm">
+    <h3>Teamcode</h3>
+    <p>Diese Seite ist nur für Elisabeth, Lea und Mais. Bitte gib den gemeinsamen Teamcode ein. Er wird nur auf diesem Gerät gespeichert.</p>
+    <input type="password" id="codeInput" required autocomplete="current-password">
+    <div class="status-line err" id="codeErr"></div>
+    <button class="primary" type="submit">Weiter</button>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// Web-App-URL aus dem Apps Script (Bereitstellen → Web-App) hier eintragen:
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoVUWn5PMjg3fsIaaqwi7xiyYVqgNMJ-J0atOEzxugmWoJnnzsVAAmml5WHoCMZoaTuA/exec';
+
+const TAGUNG = new Date('2026-11-16T00:00:00');
+const KEY_CODE = 'bell_aufgaben_code', KEY_ME = 'bell_aufgaben_ich', KEY_FILTER = 'bell_aufgaben_filter';
+const POLL_MS = 20000;
+
+let state = { aufgaben: [], personen: ['Elisabeth', 'Lea', 'Mais'], bereiche: [], status: [] };
+let filter = { person: 'alle', status: 'aktiv', bereich: 'alle' };
+const FILTER_PERSONEN_OK = ['alle', 'ich', 'Elisabeth', 'Lea', 'Mais'];
+let offen = new Set();          // ausgeklappte Aufgaben
+let busy = false, lastLoad = null;
+
+const $ = id => document.getElementById(id);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
+try { Object.assign(filter, JSON.parse(store.get(KEY_FILTER) || '{}')); } catch (e) {}
+if (!FILTER_PERSONEN_OK.includes(filter.person)) filter.person = 'alle';
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function linkify(s) { return esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+function toast(t) { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 2200); }
+function code() { return store.get(KEY_CODE) || ''; }
+function me() { return store.get(KEY_ME) || ''; }
+function fmtDate(iso) { if (!iso) return ''; const [y, m, d] = iso.split('-'); return d && m ? `${d}.${m}.` : iso; }
+function daysUntil(iso) { const t = new Date(iso + 'T00:00:00'); const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((t - h) / 86400000); }
+
+// ---------- Server ----------
+async function laden(still) {
+  if (SCRIPT_URL.startsWith('HIER')) { setStatus('Die Web-App-URL ist noch nicht eingetragen (SCRIPT_URL im Quelltext).', true); return; }
+  if (!code()) { zeigeCode(); return; }
+  try {
+    const res = await fetch(SCRIPT_URL + '?code=' + encodeURIComponent(code()) + '&t=' + Date.now());
+    const d = await res.json();
+    if (!d.ok) { if (/Teamcode/.test(d.fehler || '')) { store.set(KEY_CODE, ''); zeigeCode('Der Teamcode stimmt nicht.'); } else setStatus(d.fehler || 'Fehler beim Laden', true); return; }
+    state = d;
+    lastLoad = new Date();
+    setStatus();
+    if (!busy) render();
+  } catch (e) {
+    setStatus('Keine Verbindung. Änderungen werden erst gespeichert, wenn die Verbindung wieder steht.', true);
+    if (!still) render();
+  }
+}
+
+async function speichern(aufgabe, meldung) {
+  busy = true;
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ code: code(), aktion: 'speichern', person: me(), aufgabe }) });
+    const d = await res.json();
+    if (!d.ok) throw new Error(d.fehler || 'Fehler');
+    const i = state.aufgaben.findIndex(a => a.id === d.aufgabe.id);
+    if (i > -1) state.aufgaben[i] = d.aufgabe; else state.aufgaben.push(d.aufgabe);
+    toast(meldung || 'Gespeichert');
+  } catch (e) {
+    toast('Nicht gespeichert. Bitte erneut versuchen.');
+    await laden(true);
+  } finally {
+    busy = false;
+    render();
+  }
+}
+
+function setStatus(msg, err) {
+  const el = $('statusLine');
+  if (msg) { el.textContent = msg; el.classList.toggle('err', !!err); return; }
+  el.classList.remove('err');
+  el.textContent = 'Zuletzt aktualisiert ' + lastLoad.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr · wird alle 20 Sekunden abgeglichen';
+}
+
+// ---------- Teamcode und Person ----------
+function zeigeCode(fehler) { $('codeErr').textContent = fehler || ''; $('codeOverlay').classList.add('show'); setTimeout(() => $('codeInput').focus(), 50); }
+$('codeForm').addEventListener('submit', e => {
+  e.preventDefault();
+  store.set(KEY_CODE, $('codeInput').value.trim());
+  $('codeOverlay').classList.remove('show');
+  laden();
+});
+
+function fuellePersonen() {
+  const ps = state.personen || [];
+  $('meSelect').innerHTML = '<option value="">Name wählen</option>' + ps.map(p => `<option ${p === me() ? 'selected' : ''}>${esc(p)}</option>`).join('');
+  $('nZust').innerHTML = '<option value="">Bitte wählen</option>' + ps.map(p => `<option>${esc(p)}</option>`).join('');
+  $('nBereich').innerHTML = (state.bereiche || []).map(b => `<option>${esc(b)}</option>`).join('');
+}
+$('meSelect').addEventListener('change', e => { store.set(KEY_ME, e.target.value); render(); });
+
+// ---------- Neue Aufgabe ----------
+$('newBtn').addEventListener('click', () => {
+  if (!me()) { toast('Bitte zuerst oben Deinen Namen wählen'); $('meSelect').focus(); return; }
+  $('newForm').classList.toggle('show');
+  if (filter.bereich !== 'alle') $('nBereich').value = filter.bereich;
+  $('nZust').value = me();
+  $('nTitel').focus();
+});
+$('newCancel').addEventListener('click', () => $('newForm').classList.remove('show'));
+$('newForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const a = { titel: $('nTitel').value.trim(), bereich: $('nBereich').value, zustaendig: $('nZust').value,
+              faellig: $('nFaellig').value, link: $('nLink').value.trim(), notiz: $('nNotiz').value.trim(), status: 'offen' };
+  if (!a.titel) return;
+  if (!a.zustaendig) { toast('Bitte eine zuständige Person wählen'); $('nZust').focus(); return; }
+  e.target.reset();
+  $('newForm').classList.remove('show');
+  speichern(a, 'Aufgabe angelegt');
+});
+
+// ---------- Filter ----------
+function renderFilter() {
+  const chip = (grp, val, label) => `<button class="chip ${filter[grp] === val ? 'on' : ''}" data-grp="${grp}" data-val="${esc(val)}">${esc(label)}</button>`;
+  const ps = state.personen || [];
+  $('filters').innerHTML =
+    chip('person', 'alle', 'Alle') + (me() ? chip('person', 'ich', 'Nur meine') : '') +
+    ps.filter(p => p !== me()).map(p => chip('person', p, p)).join('') +
+    '<span class="sep"></span>' +
+    chip('status', 'aktiv', 'Noch zu tun') + chip('status', 'erledigt', 'Erledigt') + chip('status', 'archiviert', 'Archiv') +
+    '<span class="sep"></span>' +
+    `<label>Bereich <select id="fBereich"><option value="alle">Alle Bereiche</option>${(state.bereiche || []).map(b => `<option ${filter.bereich === b ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>`;
+  $('filters').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { filter[b.dataset.grp] = b.dataset.val; store.set(KEY_FILTER, JSON.stringify(filter)); render(); }));
+  $('fBereich').addEventListener('change', e => { filter.bereich = e.target.value; store.set(KEY_FILTER, JSON.stringify(filter)); render(); });
+}
+
+function passt(a) {
+  if (filter.status === 'aktiv' && (a.status === 'erledigt' || a.status === 'archiviert')) return false;
+  if (filter.status === 'erledigt' && a.status !== 'erledigt') return false;
+  if (filter.status === 'archiviert' && a.status !== 'archiviert') return false;
+  if (filter.bereich !== 'alle' && a.bereich !== filter.bereich) return false;
+  const z = a.zustaendig || '';
+  if (filter.person === 'ich') return z === me();
+  if (filter.person !== 'alle') return z === filter.person;
+  return true;
+}
+
+// ---------- Liste ----------
+function render() {
+  fuellePersonen();
+  renderFilter();
+  const alle = state.aufgaben.filter(a => a.status !== 'archiviert');
+  const erledigt = alle.filter(a => a.status === 'erledigt').length;
+  $('statDone').textContent = erledigt; $('statAll').textContent = alle.length;
+  $('barFill').style.width = alle.length ? (100 * erledigt / alle.length) + '%' : '0';
+  const meine = alle.filter(a => a.zustaendig === me() && a.status !== 'erledigt').length;
+  $('statMine').innerHTML = me() ? `Für Dich offen <b>${meine}</b>` : '';
+  const d = daysUntil('2026-11-16');
+  $('statDays').innerHTML = d > 0 ? `Noch <b>${d}</b> Tage bis zur Tagung` : (d >= -1 ? '<b>Tagung läuft</b>' : '');
+
+  const liste = state.aufgaben.filter(passt);
+  const bereiche = (state.bereiche || []).concat([...new Set(liste.map(a => a.bereich))].filter(b => !(state.bereiche || []).includes(b)));
+  const reihenfolge = a => [a.status === 'erledigt' ? 1 : 0, a.faellig || '9999', a.titel.toLowerCase()];
+  const cmp = (x, y) => { const a = reihenfolge(x), b = reihenfolge(y); for (let i = 0; i < a.length; i++) { if (a[i] < b[i]) return -1; if (a[i] > b[i]) return 1; } return 0; };
+
+  let html = '';
+  bereiche.forEach(b => {
+    const items = liste.filter(a => a.bereich === b).sort(cmp);
+    if (!items.length) return;
+    const fertig = state.aufgaben.filter(a => a.bereich === b && a.status === 'erledigt').length;
+    const gesamt = state.aufgaben.filter(a => a.bereich === b && a.status !== 'archiviert').length;
+    html += `<section class="group"><h2>${esc(b)} <span>${fertig} von ${gesamt} erledigt</span></h2>${items.map(karte).join('')}</section>`;
+  });
+  $('list').innerHTML = html || '<div class="empty">Keine Aufgaben für diese Auswahl.</div>';
+  binde();
+}
+
+function karte(a) {
+  const ps = state.personen || [];
+  const done = a.status === 'erledigt';
+  let due = '';
+  if (a.faellig) {
+    const t = daysUntil(a.faellig);
+    const cls = done ? '' : (t < 0 ? 'due-late' : (t <= 3 ? 'due-soon' : ''));
+    due = `<span class="${cls}">fällig ${fmtDate(a.faellig)}</span>`;
+  }
+  const badge = a.status === 'in Arbeit' ? '<span class="badge b-arbeit">in Arbeit</span>' : (done ? '<span class="badge b-erledigt">erledigt</span>' : '');
+  const optP = sel => (ps.includes(sel) ? '' : '<option value="" selected>Bitte wählen</option>') + ps.map(p => `<option ${p === sel ? 'selected' : ''}>${esc(p)}</option>`).join('');
+  const optS = sel => (state.status || []).map(s => `<option ${s === sel ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  const optB = sel => (state.bereiche || []).map(s => `<option ${s === sel ? 'selected' : ''}>${esc(s)}</option>`).join('');
+  return `<article class="task ${done ? 'done' : ''} ${offen.has(a.id) ? 'open' : ''}" data-id="${esc(a.id)}">
+    <input type="checkbox" data-act="toggle" ${done ? 'checked' : ''} aria-label="Erledigt">
+    <div class="title">${esc(a.titel)}</div>
+    <div class="meta">
+      <select data-act="zust" aria-label="Zuständig">${optP(a.zustaendig)}</select>
+      ${badge} ${due}
+      ${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">Link öffnen</a>` : ''}
+      <button class="link" data-act="edit">${offen.has(a.id) ? 'Schließen' : 'Bearbeiten'}</button>
+    </div>
+    ${a.notiz ? `<div class="note">${linkify(a.notiz)}</div>` : ''}
+    ${a.geaendertVon ? `<div class="changed">zuletzt geändert von ${esc(a.geaendertVon)}, ${esc(a.geaendertAm)}</div>` : ''}
+    <div class="edit">
+      <label>Aufgabe<input type="text" data-f="titel" value="${esc(a.titel)}"></label>
+      <div class="row">
+        <label>Status<select data-f="status">${optS(a.status)}</select></label>
+        <label>Bereich<select data-f="bereich">${optB(a.bereich)}</select></label>
+        <label>Fällig am<input type="date" data-f="faellig" value="${esc(a.faellig)}"></label>
+        <label>Link<input type="url" data-f="link" value="${esc(a.link)}"></label>
+      </div>
+      <label>Notiz<textarea data-f="notiz">${esc(a.notiz)}</textarea></label>
+      <div class="actions">
+        <button class="primary" data-act="save">Änderungen speichern</button>
+        <button class="link" data-act="archive">${a.status === 'archiviert' ? 'Wiederherstellen' : 'Ins Archiv verschieben'}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function binde() {
+  document.querySelectorAll('.task').forEach(el => {
+    const id = el.dataset.id;
+    const a = () => state.aufgaben.find(x => x.id === id);
+    const brauchtName = () => { if (!me()) { toast('Bitte zuerst oben Deinen Namen wählen'); $('meSelect').focus(); return true; } return false; };
+    el.querySelector('[data-act=toggle]').addEventListener('change', e => {
+      if (brauchtName()) { e.target.checked = !e.target.checked; return; }
+      const s = e.target.checked ? 'erledigt' : 'offen';
+      Object.assign(a(), { status: s }); render();
+      speichern({ id, status: s }, s === 'erledigt' ? 'Erledigt' : 'Wieder offen');
+    });
+    el.querySelector('[data-act=zust]').addEventListener('change', e => {
+      if (brauchtName() || !e.target.value) { render(); return; }
+      Object.assign(a(), { zustaendig: e.target.value }); speichern({ id, zustaendig: e.target.value }, 'Zuständigkeit geändert');
+    });
+    el.querySelector('[data-act=edit]').addEventListener('click', () => { offen.has(id) ? offen.delete(id) : offen.add(id); render(); });
+    el.querySelector('[data-act=save]').addEventListener('click', () => {
+      if (brauchtName()) return;
+      const u = { id };
+      el.querySelectorAll('[data-f]').forEach(f => { u[f.dataset.f] = f.value.trim(); });
+      if (!u.titel) { toast('Die Aufgabe braucht einen Titel'); return; }
+      offen.delete(id); Object.assign(a(), u); speichern(u);
+    });
+    el.querySelector('[data-act=archive]').addEventListener('click', () => {
+      if (brauchtName()) return;
+      const s = a().status === 'archiviert' ? 'offen' : 'archiviert';
+      offen.delete(id); Object.assign(a(), { status: s }); speichern({ id, status: s }, s === 'archiviert' ? 'Ins Archiv verschoben' : 'Wiederhergestellt');
+    });
+  });
+}
+
+render();
+laden();
+setInterval(() => { if (!busy && !document.querySelector('.task.open') && !$('newForm').classList.contains('show')) laden(true); }, POLL_MS);
+</script>
+</body>
+</html>
