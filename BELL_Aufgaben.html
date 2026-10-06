@@ -173,7 +173,7 @@ body.zieht .group.leer .tasks { min-height: 44px; border: 1px dashed #c5d3e3; bo
 <div class="overlay" id="codeOverlay">
   <form class="dialog" id="codeForm">
     <h3>Teamcode</h3>
-    <p>Diese Seite ist nur für Elisabeth, Lea und Mais. Bitte gib den gemeinsamen Teamcode ein. Er wird nur auf diesem Gerät gespeichert.</p>
+    <p>Für diese Seite ist ein Teamcode eingerichtet. Bitte gib ihn ein. Er wird nur auf diesem Gerät gespeichert.</p>
     <input type="password" id="codeInput" required autocomplete="current-password">
     <div class="status-line err" id="codeErr"></div>
     <button class="primary" type="submit">Weiter</button>
@@ -214,7 +214,6 @@ function daysUntil(iso) { const t = new Date(iso + 'T00:00:00'); const h = new D
 // ---------- Server ----------
 async function laden(still) {
   if (SCRIPT_URL.startsWith('HIER')) { setStatus('Die Web-App-URL ist noch nicht eingetragen (SCRIPT_URL im Quelltext).', true); return; }
-  if (!code()) { zeigeCode(); return; }
   try {
     const res = await fetch(SCRIPT_URL + '?code=' + encodeURIComponent(code()) + '&t=' + Date.now());
     const d = await res.json();
